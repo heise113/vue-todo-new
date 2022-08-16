@@ -23,6 +23,9 @@ export default {
 
   .wrapper-toast {
     padding: 15px 20px;
+    color: $white;
+    border-radius: 10px;
+
 
     &_green {
       background-color: $limegreen;

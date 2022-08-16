@@ -118,7 +118,7 @@ export default {
         this.$emit('finish', this.name)
       }
       else {
-        this.$emit('errorName')
+        this.$emit('viewToast', false, 'Введите имя!')
       }
     }
   }

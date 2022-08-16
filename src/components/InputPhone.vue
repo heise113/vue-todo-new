@@ -78,6 +78,9 @@
 
 <script>
 export default {
+  created() {
+    this.phone = this.temp_phone
+  },
   mounted() {
     this.$refs.phone.focus()
   },

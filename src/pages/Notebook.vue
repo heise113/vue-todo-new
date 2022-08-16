@@ -11,29 +11,28 @@
     <transition name="toast-transition">
       <Toast
           class="wrapper-home__toast"
-          v-if="active_add_contact_toast || active_not_name_toast"
-          :success="active_add_contact_toast"
+          v-if="toast_success !== null"
+          :success="toast_success"
       >
-        {{ active_not_name_toast ? 'Контакт добавлен!' : 'Введите имя!' }}
+        {{ toast_message }}
       </Toast>
     </transition>
     <div class="wrapper-home__input">
-      <transition name="fade" mode="out-in">
+      <transition name="fade-transition" mode="out-in">
         <InputPhone
-            @addPhone="addPhone"
+            @addPhone="goNext"
             v-if="active_input_phone"
             :temp_phone="temp_contact.phone"
         />
         <InputName
             @goBack="goBack"
             @finish="addContact"
-            @errorName="errorName"
+            @viewToast="viewToast"
             v-else-if="active_input_name"
             :temp_name="temp_contact.name"
         />
       </transition>
     </div>
-
     <ContactsList @viewModal="viewModal"/>
   </div>
 </template>
@@ -45,7 +44,7 @@
     position: fixed;
     left: 50%;
     margin-top: 50px;
-    top:0;
+    top: 0;
     transform: translateX(-50%);
   }
 
@@ -56,12 +55,14 @@
   }
 }
 
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
+.fade-transition {
+  &-enter-from, &-leave-to {
+    opacity: 0;
+  }
 
-.fade-enter-active, .fade-leave-active {
-  transition: all 0.3s ease;
+  &-enter-active, &-leave-active {
+    transition: all 0.3s ease;
+  }
 }
 
 .toast-transition {
@@ -96,8 +97,8 @@ export default {
     return {
       active_input_phone: true,
       active_input_name: false,
-      active_add_contact_toast: false,
-      active_not_name_toast: false,
+      toast_success: null,
+      toast_message: null,
       active_modal: false,
       selected_contact: null,
       modal_name: '',
@@ -114,36 +115,30 @@ export default {
       this.active_input_name = false
       this.active_input_phone = true
     },
-    addPhone(phone) {
+    goNext(phone) {
       this.temp_contact.phone = phone
       this.active_input_phone = false
-        this.active_input_name = true
-    },
-    errorName() {
-      this.active_not_name_toast = true
-      setTimeout(() => {
-        this.active_not_name_toast = false
-      }, 2000)
+      this.active_input_name = true
     },
     addContact(name) {
-
-      this.active_add_contact_toast = true
-      setTimeout(() => {
-        this.active_add_contact_toast = false
-      }, 2000)
-
+      this.viewToast(true, 'Контакт добавлен!')
       this.temp_contact.name = name
-
       this.active_input_name = false
       setTimeout(() => {
         this.active_input_phone = true
       }, 300)
-
       this.$store.commit('addContact', this.temp_contact)
       this.temp_contact.id++
-
       this.temp_contact.phone = ''
       this.temp_contact.name = ''
+    },
+    viewToast(val, message) {
+      this.toast_success = val
+      this.toast_message = message
+      setTimeout(() => {
+        this.toast_success = null
+        this.toast_message = null
+      }, 2000)
     },
     viewModal(modal_name = 'no name', contact = 'no contact') {
       switch (modal_name) {
