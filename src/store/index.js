@@ -21,11 +21,12 @@ export default createStore({
             temp_contact.id = contact.id
             temp_contact.phone = contact.phone
             temp_contact.name = contact.name
-
             state.contacts.unshift(temp_contact)
+            localStorage.setItem('contacts', JSON.stringify(state.contacts))
         },
         deleteContact(state, id) {
             state.contacts = state.contacts.filter(item => item.id !== id)
+            localStorage.setItem('contacts', JSON.stringify(state.contacts))
         },
         updateContact(state, contact) {
             state.contacts.forEach((el, index, array) => {
@@ -33,10 +34,12 @@ export default createStore({
                     ? array[index] = contact
                     : null
             })
+            localStorage.setItem('contacts', JSON.stringify(state.contacts))
         }
     },
     getters: {
         getContacts(state) {
+            state.contacts = JSON.parse(localStorage.getItem('contacts'))
             return state.contacts
         }
     }

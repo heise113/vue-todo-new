@@ -1,12 +1,14 @@
 <template>
 
-    <div class="wrapper-modal" @mousedown.self="$emit('viewModal')">
-      <component
-          @viewModal="$emit('viewModal')"
-          :contact="contact"
-          v-if="dynamic_modals"
-          :is='dynamic_modals'
-      />
+    <div class="wrapper-modal" @mousedown.self="viewModalContent">
+      <transition name="m-content-transition">
+        <component
+            @viewModal="viewModalContent"
+            :contact="contact"
+            v-if="active_modal_content"
+            :is='dynamic_modals'
+        />
+      </transition>
     </div>
 
 </template>
@@ -20,18 +22,19 @@
   bottom: 0;
   left: 0;
   background-color: rgba(0, 0, 0, .7);
+  z-index: 100;
 }
 
-.modal-enter-from {
-  opacity: 0;
-}
-
-.modal-enter-active, .modal-leave-active {
-  transition: all 0.3s ease;
-}
-
-.modal-leave-to {
-  opacity: 0;
+.m-content-transition {
+  &-enter-from {
+    transform: translateY(-200%);
+  }
+  &-leave-to {
+    transform: translateY(200%);
+  }
+  &-enter-active, &-leave-active {
+    transition: all 0.5s ease;
+  }
 }
 
 </style>
@@ -48,6 +51,17 @@ export default {
       return defineAsyncComponent(() => import(`../modal/${this.modal_name}.vue`))
     }
   },
+  data() {
+    return {
+      active_modal_content: true
+    }
+  },
+  methods: {
+    viewModalContent() {
+      this.$emit('viewModal')
+      this.active_modal_content = false
+    }
+  }
 }
 
 </script>

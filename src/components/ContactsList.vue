@@ -1,8 +1,10 @@
 <template>
   <div class="wrapper-list">
     <transition-group
-        name="list"
+        name="list-transition"
+        mode="out-in"
         appear
+        move-class="transition: all 0.8s ease;"
     >
       <div
           v-for="item in $store.getters.getContacts"
@@ -90,35 +92,38 @@
   }
 }
 
-.list-enter-from {
-  opacity: 0;
-  transform: scale(0.6);
-}
 
-.list-enter-to {
-  opacity: 1;
-  transform: scale(1);
-}
+.list-transition {
+  &-enter-from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
 
-.list-enter-active {
-  transition: all 0.5s ease;
-}
+  &-enter-to {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-.list-leave-from {
-  opacity: 1;
-}
+  &-enter-active {
+    transition: all 0.5s ease;
+  }
 
-.list-leave-to {
-  transform: translateX(-20px);
-  opacity: 0;
-}
+  &-leave-from {
+    opacity: 1;
+  }
 
-.list-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
+  &-leave-to {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
 
-.list-move {
-  transition: all 0.3s ease;
+  &-leave-active {
+    transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+  }
+
+  &-move {
+    transition: all 0.8s ease;
+  }
 }
 
 </style>

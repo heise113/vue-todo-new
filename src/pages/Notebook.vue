@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper-home">
-    <transition name="modal">
+    <transition name="modal-transition">
       <ModalWrapper
           v-if="active_modal"
           @viewModal="viewModal"
@@ -76,6 +76,25 @@
   }
 }
 
+.modal-transition {
+  &-enter-from {
+    opacity: 0;
+  }
+
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transition: all 0.3s ease;
+  }
+
+  &-leave-active {
+    transition: all 0.1s ease;
+  }
+}
+
+
 </style>
 
 <script>
@@ -124,11 +143,9 @@ export default {
       this.viewToast(true, 'Контакт добавлен!')
       this.temp_contact.name = name
       this.active_input_name = false
-      setTimeout(() => {
-        this.active_input_phone = true
-      }, 300)
+      this.active_input_phone = true
       this.$store.commit('addContact', this.temp_contact)
-      this.temp_contact.id++
+      this.temp_contact.id++;
       this.temp_contact.phone = ''
       this.temp_contact.name = ''
     },
@@ -148,7 +165,7 @@ export default {
           break
       }
       this.active_modal === true
-          ? this.active_modal = false
+          ? setTimeout(() => this.active_modal = false, 300)
           : this.active_modal = true
     }
   }
